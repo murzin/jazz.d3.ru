@@ -6,24 +6,38 @@
     <script src="https://www.youtube.com/player_api"></script>
 
     <style>
-        #content  {margin-left: 20%; margin-right: 20%;}
-        div      {font-family: Verdana,Geneva,sans-serif;}
-        #domains {margin-left: 30px; float: left; }
-        #title   {font-size: 20pt; margin-top: 30px; margin-bottom: 30px;}
-        #text    {font-size: 16pt; margin-top: 20px;}
-        #user    {font-size: 16pt; margin-top: 20px; font-weight: bold;}
-        #jazz    {font-size: 18pt; margin-top: 40px; margin-bottom: 30px; text-align: center;}
-        .bold    {font-weight: bold;}
+        body            {font-family: Verdana, Geneva, sans-serif;}
+        .bold           {font-weight: bold;}
+        #left_part      {width: 20%;  float: left;}
+        #middle_part    {width: 60%;  float: left;}
+        #right_part     {width: auto; float: left;}
+        #wrapper:after  {display: table; clear: both;}
+        #content        {min-height: 500px;}
+        #domains        {width: auto; float: right; margin: 20px;}
+        #title          {font-size: 20pt; margin-top: 30px; margin-bottom: 30px;}
+        #text           {font-size: 16pt; margin-top: 20px; text-align: justify;}
+        #user           {font-size: 16pt; margin-top: 20px; font-weight: bold;}
+        #jazz           {font-size: 18pt; margin-top: 40px; margin-bottom: 30px;}
     </style>
 </head>
 <body>
-<div id="domains"></div>
-<div id="content">
-    <div id="title"></div>
-    <div id="player"></div>
-    <div id="text"></div>
-    <div id="user"></div>
-    <div id="jazz"><a href="https://jazz.d3.ru" target="_blank">jazz.d3.ru</a></div>
+<div id="wrapper">
+    <div id="left_part">
+        <div id="menu">
+            <span id="domains"></span>
+        </div>
+    </div>
+    <div id="middle_part">
+        <div id="content">
+            <div id="title"></div>
+            <div id="player"></div>
+            <div id="text"></div>
+            <div id="user"></div>
+            <div id="jazz"><a href="https://jazz.d3.ru" target="_blank">jazz.d3.ru</a></div>
+        </div>
+    </div>
+    <div id="right_part">
+    </div>
 </div>
 
 <script>
@@ -34,6 +48,7 @@
 
         var domains     = {
             jazz            : "Jazz",
+            blues           : "Blues",
             cm              : "Classic Music",
             musicvideo      : "Music Video", 
             rightmusicvideo : "Right Music Video", 
