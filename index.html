@@ -7,6 +7,7 @@
 
     <style>
         body            {font-family: Verdana, Geneva, sans-serif;}
+        .blur           {filter: blur(1px);}
         .bold           {font-weight: bold;}
         .selected a:visited         {color: crimson;}
         .selected a:link, a:hover   {color: crimson;}
@@ -22,9 +23,28 @@
         #user           {font-size: 16pt; margin-top: 20px; font-weight: bold;}
         #jazz           {font-size: 18pt; margin-top: 40px; margin-bottom: 30px;}
         #d3             {font-size: 28pt; margin-top: 20px; text-align: center;}
+		#loader {
+			border: 16px solid #f3f3f3;
+			border-top: 16px solid #aaa;
+			border-radius: 50%;
+			position: fixed;
+			itop: 50%;
+			top: 300px;
+			left: 50%;
+			width: 120px;
+			height: 120px;
+  			imargin-top: -60px;
+  			margin-left: -60px;
+			animation: spin 2s linear infinite;
+		}
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
     </style>
 </head>
 <body>
+<div id="loader"></div>
 <div id="wrapper">
     <div id="left_part">
         <div id="menu">
@@ -52,6 +72,7 @@
 
 <script>
         var player;
+        var player_ready  = 0;
         var max_page      = 100;
         var domain        = 'jazz';
         var domain_to_use = domain;
@@ -86,10 +107,12 @@
         document.getElementById('menu_'+domain).classList.add('selected');
 
         function onYouTubePlayerAPIReady() {
+			player_ready = 1;
             getNext();
         }
 
         function onPlayerReady(event) {
+			if ( !event.target.playVideo) setTimeout(onPlayerReady(event), 100);
             event.target.playVideo();
         }
 
@@ -100,7 +123,11 @@
         }
 
         function getNext() {
-            if (player) player.stopVideo();
+            if (player && player.stopVideo) {
+				player.stopVideo();
+			}
+            //document.body.classList.add('blur');
+			document.getElementById('loader').style.visibility = 'visible';
             var page = parseInt(Math.random() * max_page) + 1;
             domain_to_use = domain;
             if (domain == 'alltugeza') {
@@ -146,7 +173,7 @@
             document.getElementById('text').innerHTML  = text;
             document.getElementById('user').innerHTML  = user;
             document.getElementById('jazz').innerHTML  = '<a href="https://'+domain_to_use+'.d3.ru/'+p_id+'/">'+domain_to_use+'.d3.ru/'+p_id+'/</a>';
-            if ( ! player) { //player.destroy();
+            if ( ! player) {
                 player = new YT.Player('player', {
                   width: '640',
                   height: '390',
@@ -158,8 +185,12 @@
                   }
                 });
             } else {
+				if (! player.loadVideoById) setTimeout(getNext, 100);
                 player.loadVideoById({videoId:v_id});
             }
+
+            //document.body.classList.remove('blur');
+			document.getElementById('loader').style.visibility = 'hidden';
         }
     </script>
 </body>
