@@ -6,9 +6,9 @@
     <script src="https://www.youtube.com/player_api"></script>
 
     <style>
-        body     {margin-left: 20%; margin-right: 20%;}
+        #content  {margin-left: 20%; margin-right: 20%;}
         div      {font-family: Verdana,Geneva,sans-serif;}
-        #domains {margin-left: 30px; floating: left; }
+        #domains {margin-left: 30px; float: left; }
         #title   {font-size: 20pt; margin-top: 30px; margin-bottom: 30px;}
         #text    {font-size: 16pt; margin-top: 20px;}
         #user    {font-size: 16pt; margin-top: 20px; font-weight: bold;}
@@ -18,11 +18,13 @@
 </head>
 <body>
 <div id="domains"></div>
-<div id="title"></div>
-<div id="player"></div>
-<div id="text"></div>
-<div id="user"></div>
-<div id="jazz"><a href="https://jazz.d3.ru" target="_blank">jazz.d3.ru</a></div>
+<div id="content">
+    <div id="title"></div>
+    <div id="player"></div>
+    <div id="text"></div>
+    <div id="user"></div>
+    <div id="jazz"><a href="https://jazz.d3.ru" target="_blank">jazz.d3.ru</a></div>
+</div>
 
 <script>
         var player;
