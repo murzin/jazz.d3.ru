@@ -32,15 +32,17 @@
 
         var domains     = {
             jazz            : "Jazz",
+            cm              : "Classic Music",
             musicvideo      : "Music Video", 
             rightmusicvideo : "Right Music Video", 
-            concerts        : "Concerts"
+            concerts        : "Concerts",
+            bestmusic       : "Best Music"
         };
 
         var menu = "";
         for (var key in domains) {
             var link = '<a href="#" onclick="resetMenu();this.parentNode.classList.add(\'bold\') ;window.domain=\''+key+'\'; getNext(); return false">';
-            menu += '<div id="menu_'+ key +'">' + link + key + '</a></div>'
+            menu += '<div id="menu_'+ key +'">' + link + domains[key] + '</a></div>'
         }
         document.getElementById("domains").innerHTML = menu;
 
