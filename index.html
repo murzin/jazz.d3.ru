@@ -100,6 +100,7 @@
         }
 
         function getNext() {
+            if (player) player.stopVideo();
             var page = parseInt(Math.random() * max_page) + 1;
             domain_to_use = domain;
             if (domain == 'alltugeza') {
@@ -121,10 +122,10 @@
 
         function doRES(res) {
             if ( ! res) getNext();
-            if (res.status && res.status.error) getNext();
+            if (res.status && res.status == 'error') { setTimeout(getNext, 500); return false; }
             if (
                 ! res.posts ||
-                ! res.posts.length > 0) getNext();
+                ! res.posts.length > 0) { setTimeout(getNext, 500); return false; }
 
             var post = res.posts[parseInt(Math.random() * res.posts.length)];
 
@@ -133,7 +134,7 @@
                 ! post.data ||
                 ! post.data.link ||
                 ! post.data.link.embed ||
-                ! post.data.link.embed.id) getNext();
+                ! post.data.link.embed.id) { setTimeout(getNext, 500); return false; }
 
             var title = post.data.title;
             var text  = post.data.text;
@@ -147,14 +148,13 @@
             document.getElementById('jazz').innerHTML  = '<a href="https://'+domain_to_use+'.d3.ru/'+p_id+'/">'+domain_to_use+'.d3.ru/'+p_id+'/</a>';
             if ( ! player) { //player.destroy();
                 player = new YT.Player('player', {
-                  autoplay: 1,  
                   width: '640',
                   height: '390',
                   videoId: v_id,
                   events: {
                     onReady         : onPlayerReady,
                     onStateChange   : onPlayerStateChange,
-                    onError         : getNext
+                    onError         : setTimeout(getNext, 500)
                   }
                 });
             } else {
