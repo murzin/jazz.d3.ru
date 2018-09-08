@@ -2,17 +2,22 @@
 <html>
 <head>
 <title>lazz.d3.ru</title>
+
     <script src="https://www.youtube.com/player_api"></script>
+
     <style>
-        body    {margin-left: 20%; margin-right: 20%;}
-        div     {font-family: Verdana,Geneva,sans-serif;}
-        #title  {font-size: 20pt; margin-top: 30px; margin-bottom: 30px;}
-        #text   {font-size: 16pt; margin-top: 20px;}
-        #user   {font-size: 16pt; margin-top: 20px; font-weight: bold;}
-        #jazz   {font-size: 18pt; margin-top: 40px; margin-bottom: 30px; text-align: center;}
+        body     {margin-left: 20%; margin-right: 20%;}
+        div      {font-family: Verdana,Geneva,sans-serif;}
+        #domains {margin-left: 30px; floating: left; }
+        #title   {font-size: 20pt; margin-top: 30px; margin-bottom: 30px;}
+        #text    {font-size: 16pt; margin-top: 20px;}
+        #user    {font-size: 16pt; margin-top: 20px; font-weight: bold;}
+        #jazz    {font-size: 18pt; margin-top: 40px; margin-bottom: 30px; text-align: center;}
+        .bold    {font-weight: bold;}
     </style>
 </head>
 <body>
+<div id="domains"></div>
 <div id="title"></div>
 <div id="player"></div>
 <div id="text"></div>
@@ -20,9 +25,32 @@
 <div id="jazz"><a href="https://jazz.d3.ru" target="_blank">jazz.d3.ru</a></div>
 
 <script>
-        var max_page = 100;
         var player;
-        var base = 'https://d3.ru/api/domains/jazz/feed/?page=PAGE&feed_type=subdomain&sorting=hotness';
+        var max_page    = 100;
+        var domain      = 'jazz';
+        var base        = 'https://d3.ru/api/domains/DOMAIN/feed/?page=PAGE&feed_type=subdomain&sorting=hotness';
+
+        var domains     = {
+            jazz            : "Jazz",
+            musicvideo      : "Music Video", 
+            rightmusicvideo : "Right Music Video", 
+            concerts        : "Concerts"
+        };
+
+        var menu = "";
+        for (var key in domains) {
+            var link = '<a href="#" onclick="resetMenu();this.parentNode.classList.add(\'bold\') ;window.domain=\''+key+'\'; getNext(); return false">';
+            menu += '<div id="menu_'+ key +'">' + link + key + '</a></div>'
+        }
+        document.getElementById("domains").innerHTML = menu;
+
+        function resetMenu() {
+            for (var key in domains) {
+                document.getElementById('menu_'+key).classList.remove('bold');
+            }
+        }
+
+        document.getElementById('menu_'+domain).classList.add('bold');
 
         function onYouTubePlayerAPIReady() {
             getNext();
@@ -40,7 +68,7 @@
 
         function getNext() {
             var page = parseInt(Math.random() * max_page) + 1;
-            var url = base.replace('PAGE', page);
+            var url = base.replace('DOMAIN', domain).replace('PAGE', page);
 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
@@ -78,7 +106,7 @@
             document.getElementById('title').innerHTML = title;
             document.getElementById('text').innerHTML  = text;
             document.getElementById('user').innerHTML  = user;
-            document.getElementById('jazz').innerHTML  = '<a href="https://jazz.d3.ru/'+p_id+'/">jazz.d3.ru/'+p_id+'/</a>';
+            document.getElementById('jazz').innerHTML  = '<a href="https://'+domain+'.d3.ru/'+p_id+'/">'+domain+'.d3.ru/'+p_id+'/</a>';
             if ( ! player) { //player.destroy();
                 player = new YT.Player('player', {
                   autoplay: 1,  
