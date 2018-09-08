@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>lazz.d3.ru</title>
+    <script src="http://www.youtube.com/player_api"></script>
+    <style>
+        body    {margin-left: 20%; margin-right: 20%;}
+        div     {font-family: Verdana,Geneva,sans-serif;}
+        #title  {font-size: 20pt; margin-top: 30px; margin-bottom: 30px;}
+        #text   {font-size: 16pt; margin-top: 20px;}
+        #user   {font-size: 16pt; margin-top: 20px; font-weight: bold;}
+        #jazz   {font-size: 18pt; margin-top: 40px; margin-bottom: 30px; text-align: center;}
+    </style>
+</head>
+<body>
+<div id="title"></div>
+<div id="player"></div>
+<div id="text"></div>
+<div id="user"></div>
+<div id="jazz"><a href="https://jazz.d3.ru" target="_blank">jazz.d3.ru</a></div>
+
+<script>
+        var max_page = 100;
+        var player;
+        var base = 'https://d3.ru/api/domains/jazz/feed/?page=PAGE&feed_type=subdomain&sorting=hotness';
+
+        function onYouTubePlayerAPIReady() {
+            getNext();
+        }
+
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+
+        function onPlayerStateChange(event) {        
+            if(event.data === 0) {          
+                getNext()
+            }
+        }
+
+        function getNext() {
+            var page = parseInt(Math.random() * max_page) + 1;
+            var url = base.replace('PAGE', page);
+
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && (this.status == 200 || this.status == 400)) {
+                    var myArr = JSON.parse(this.responseText);
+                    doRES(myArr);
+                }
+            };
+            xmlhttp.open("GET", url, true);
+            xmlhttp.send();
+        }
+
+        function doRES(res) {
+            if ( ! res) getNext();
+            if (res.status && res.status.error) getNext();
+            if (
+                ! res.posts ||
+                ! res.posts.length > 0) getNext();
+
+            var post = res.posts[parseInt(Math.random() * res.posts.length)];
+
+            if (
+                ! post ||
+                ! post.data ||
+                ! post.data.link ||
+                ! post.data.link.embed ||
+                ! post.data.link.embed.id) getNext();
+
+            var title = post.data.title;
+            var text  = post.data.text;
+            var user  = post.user ? post.user.login : "";
+            var v_id  = post.data.link.embed.id;
+            var p_id  = post.id;
+
+            document.getElementById('title').innerHTML = title;
+            document.getElementById('text').innerHTML  = text;
+            document.getElementById('user').innerHTML  = user;
+            document.getElementById('jazz').innerHTML  = '<a href="https://jazz.d3.ru/'+p_id+'/">jazz.d3.ru/'+p_id+'/</a>';
+            if (player) player.destroy();
+            player = new YT.Player('player', {
+              width: '640',
+              height: '390',
+              videoId: v_id,
+              events: {
+                onReady: onPlayerReady,
+                onStateChange: onPlayerStateChange,
+                onError: getNext
+              }
+            });
+        }
+    </script>
+</body>
+</html>
