@@ -79,17 +79,21 @@
             document.getElementById('text').innerHTML  = text;
             document.getElementById('user').innerHTML  = user;
             document.getElementById('jazz').innerHTML  = '<a href="https://jazz.d3.ru/'+p_id+'/">jazz.d3.ru/'+p_id+'/</a>';
-            if (player) player.destroy();
-            player = new YT.Player('player', {
-              width: '640',
-              height: '390',
-              videoId: v_id,
-              events: {
-                onReady: onPlayerReady,
-                onStateChange: onPlayerStateChange,
-                onError: getNext
-              }
-            });
+            if ( ! player) { //player.destroy();
+                player = new YT.Player('player', {
+                  autoplay: 1,  
+                  width: '640',
+                  height: '390',
+                  videoId: v_id,
+                  events: {
+                    onReady         : onPlayerReady,
+                    onStateChange   : onPlayerStateChange,
+                    onError         : getNext
+                  }
+                });
+            } else {
+                player.loadVideoById({videoId:v_id});
+            }
         }
     </script>
 </body>
