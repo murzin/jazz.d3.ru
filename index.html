@@ -8,6 +8,8 @@
     <style>
         body            {font-family: Verdana, Geneva, sans-serif;}
         .bold           {font-weight: bold;}
+        .selected a:visited         {color: crimson;}
+        .selected a:link, a:hover   {color: crimson;}
         #left_part      {width: 20%;  float: left;}
         #middle_part    {width: 60%;  float: left;}
         #right_part     {width: 18%; float: left;}
@@ -34,6 +36,7 @@
             <div id="title"></div>
             <div id="player_wrapper">
                 <div id="player"></div>
+                <div id=skip><a href="#" onclick='getNext(); return false;'>s k i p</a></div>
             </div>
             <div id="text"></div>
             <div id="user"></div>
@@ -65,18 +68,18 @@
 
         var menu = "";
         for (var key in domains) {
-            var link = '<a href="#" onclick="resetMenu();this.parentNode.classList.add(\'bold\') ;window.domain=\''+key+'\'; getNext(); return false">';
+            var link = '<a href="#" onclick="resetMenu();this.parentNode.classList.add(\'selected\') ;window.domain=\''+key+'\'; getNext(); return false">';
             menu += '<div id="menu_'+ key +'">' + link + domains[key] + '</a></div>'
         }
         document.getElementById("domains").innerHTML = menu;
 
         function resetMenu() {
             for (var key in domains) {
-                document.getElementById('menu_'+key).classList.remove('bold');
+                document.getElementById('menu_'+key).classList.remove('selected');
             }
         }
 
-        document.getElementById('menu_'+domain).classList.add('bold');
+        document.getElementById('menu_'+domain).classList.add('selected');
 
         function onYouTubePlayerAPIReady() {
             getNext();
