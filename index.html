@@ -52,22 +52,25 @@
 
 <script>
         var player;
-        var max_page    = 100;
-        var domain      = 'jazz';
-        var base        = 'https://d3.ru/api/domains/DOMAIN/feed/?page=PAGE&feed_type=subdomain&sorting=hotness';
+        var max_page      = 100;
+        var domain        = 'jazz';
+        var domain_to_use = domain;
+        var base          = 'https://d3.ru/api/domains/DOMAIN/feed/?page=PAGE&feed_type=subdomain&sorting=hotness';
 
-        var domains     = {
+        var domains       = {
             jazz            : "Jazz",
             blues           : "Blues",
             cm              : "Classic Music",
             musicvideo      : "Music Video", 
             rightmusicvideo : "Right Music Video", 
             concerts        : "Concerts",
-            bestmusic       : "Best Music"
+            bestmusic       : "Best Music",
+            alltugeza       : "Alltogeza"
         };
 
         var menu = "";
         for (var key in domains) {
+            if (key == 'alltugeza') menu += "<div style='margin-top:20px;'></div>";
             var link = '<a href="#" onclick="resetMenu();this.parentNode.classList.add(\'selected\') ;window.domain=\''+key+'\'; getNext(); return false">';
             menu += '<div id="menu_'+ key +'">' + link + domains[key] + '</a></div>'
         }
@@ -97,7 +100,12 @@
 
         function getNext() {
             var page = parseInt(Math.random() * max_page) + 1;
-            var url = base.replace('DOMAIN', domain).replace('PAGE', page);
+            domain_to_use = domain;
+            if (domain == 'alltugeza') {
+                var i = parseInt((Object.keys(domains).length - 1) * Math.random());
+                domain_to_use = Object.keys(domains)[i];
+            }
+            var url = base.replace('DOMAIN', domain_to_use).replace('PAGE', page);
 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
@@ -135,7 +143,7 @@
             document.getElementById('title').innerHTML = title;
             document.getElementById('text').innerHTML  = text;
             document.getElementById('user').innerHTML  = user;
-            document.getElementById('jazz').innerHTML  = '<a href="https://'+domain+'.d3.ru/'+p_id+'/">'+domain+'.d3.ru/'+p_id+'/</a>';
+            document.getElementById('jazz').innerHTML  = '<a href="https://'+domain_to_use+'.d3.ru/'+p_id+'/">'+domain_to_use+'.d3.ru/'+p_id+'/</a>';
             if ( ! player) { //player.destroy();
                 player = new YT.Player('player', {
                   autoplay: 1,  
