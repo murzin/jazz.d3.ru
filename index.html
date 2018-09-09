@@ -78,6 +78,11 @@
         var domain_to_use = domain;
         var base          = 'https://d3.ru/api/domains/DOMAIN/feed/?page=PAGE&feed_type=subdomain&sorting=hotness';
 
+        if (localStorage) {
+            var d = localStorage.getItem('music_domain.d3.ru');
+            if (d) domain = d;
+        }
+
         var domains       = {
             jazz            : "Jazz",
             blues           : "Blues",
@@ -93,7 +98,7 @@
         var menu = "";
         for (var key in domains) {
             if (key == 'alltugeza') menu += "<div style='margin-top:20px;'></div>";
-            var link = '<a href="#" onclick="resetMenu();this.parentNode.classList.add(\'selected\') ;window.domain=\''+key+'\'; getNext(); return false">';
+            var link = '<a href="#" onclick="return doMenuSelect(this, \''+key+'\');">';
             menu += '<div id="menu_'+ key +'">' + link + domains[key] + '</a></div>'
         }
         document.getElementById("domains").innerHTML = menu;
@@ -105,6 +110,19 @@
         }
 
         document.getElementById('menu_'+domain).classList.add('selected');
+
+        getNext();
+
+        function doMenuSelect(menuItem, key) {
+            resetMenu();
+            menuItem.parentNode.classList.add('selected');
+            domain=key;
+            if (localStorage) {
+                localStorage.setItem('music_domain.d3.ru', domain);
+            }
+            getNext();
+            return false;
+        }
 
         function onYouTubePlayerAPIReady() {
 			player_ready = 1;
@@ -175,6 +193,7 @@
             document.getElementById('jazz').innerHTML  = '<a href="https://'+domain_to_use+'.d3.ru/'+p_id+'/">'+domain_to_use+'.d3.ru/'+p_id+'/</a>';
             if ( ! player) {
                 player = new YT.Player('player', {
+                  autoplay: 1,  
                   width: '640',
                   height: '390',
                   videoId: v_id,
