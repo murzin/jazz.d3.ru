@@ -23,22 +23,21 @@
         #user           {font-size: 16pt; margin-top: 20px; font-weight: bold;}
         #jazz           {font-size: 18pt; margin-top: 40px; margin-bottom: 30px;}
         #d3             {font-size: 28pt; margin-top: 20px; text-align: center;}
+        #menu_alltugeza {margin-top:20px;}
 		#loader {
-			border: 16px solid #f3f3f3;
-			border-top: 16px solid #aaa;
-			border-radius: 50%;
-			position: fixed;
-			itop: 50%;
-			top: 300px;
-			left: 50%;
-			width: 120px;
-			height: 120px;
-  			imargin-top: -60px;
-  			margin-left: -60px;
-			animation: spin 2s linear infinite;
+			border          : 16px solid #f3f3f3;
+			border-top      : 16px solid #aaa;
+			border-radius   : 50%;
+			position        : fixed;
+			top             : 300px;
+			left            : 50%;
+			width           : 120px;
+			height          : 120px;
+  			margin-left     : -60px;
+			animation       : spin 2s linear infinite;
 		}
 		@keyframes spin {
-			0% { transform: rotate(0deg); }
+			0%   { transform: rotate(0deg); }
 			100% { transform: rotate(360deg); }
 		}
     </style>
@@ -72,7 +71,6 @@
 
 <script>
         var player;
-        var player_ready  = 0;
         var max_page      = 100;
         var domain        = 'jazz';
         var domain_to_use = domain;
@@ -97,7 +95,6 @@
 
         var menu = "";
         for (var key in domains) {
-            if (key == 'alltugeza') menu += "<div style='margin-top:20px;'></div>";
             var link = '<a href="#" onclick="return doMenuSelect(this, \''+key+'\');">';
             menu += '<div id="menu_'+ key +'">' + link + domains[key] + '</a></div>'
         }
@@ -125,7 +122,6 @@
         }
 
         function onYouTubePlayerAPIReady() {
-			player_ready = 1;
             getNext();
         }
 
@@ -144,7 +140,6 @@
             if (player && player.stopVideo) {
 				player.stopVideo();
 			}
-            //document.body.classList.add('blur');
 			document.getElementById('loader').style.visibility = 'visible';
             var page = parseInt(Math.random() * max_page) + 1;
             domain_to_use = domain;
@@ -156,16 +151,14 @@
 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && (this.status == 200 || this.status == 400)) {
-                    var myArr = JSON.parse(this.responseText);
-                    doRES(myArr);
-                }
+                if (this.readyState == 4 && (this.status == 200 || this.status == 400))
+                    doRes(JSON.parse(this.responseText));
             };
             xmlhttp.open("GET", url, true);
             xmlhttp.send();
         }
 
-        function doRES(res) {
+        function doRes(res) {
             if ( ! res) getNext();
             if (res.status && res.status == 'error') { setTimeout(getNext, 500); return false; }
             if (
@@ -181,22 +174,17 @@
                 ! post.data.link.embed ||
                 ! post.data.link.embed.id) { setTimeout(getNext, 500); return false; }
 
-            var title = post.data.title;
-            var text  = post.data.text;
-            var user  = post.user ? post.user.login : "";
-            var v_id  = post.data.link.embed.id;
-            var p_id  = post.id;
+            document.getElementById('title').innerHTML = post.data.title;
+            document.getElementById('text').innerHTML  = post.data.text;
+            document.getElementById('user').innerHTML  = post.user ? post.user.login : "";
+            document.getElementById('jazz').innerHTML  = '<a href="https://'+domain_to_use+'.d3.ru/'+post.id+'/">'+domain_to_use+'.d3.ru/'+post.id+'/</a>';
 
-            document.getElementById('title').innerHTML = title;
-            document.getElementById('text').innerHTML  = text;
-            document.getElementById('user').innerHTML  = user;
-            document.getElementById('jazz').innerHTML  = '<a href="https://'+domain_to_use+'.d3.ru/'+p_id+'/">'+domain_to_use+'.d3.ru/'+p_id+'/</a>';
             if ( ! player) {
                 player = new YT.Player('player', {
                   autoplay: 1,  
                   width: '640',
                   height: '390',
-                  videoId: v_id,
+                  videoId: post.data.link.embed.id,
                   events: {
                     onReady         : onPlayerReady,
                     onStateChange   : onPlayerStateChange,
@@ -205,10 +193,9 @@
                 });
             } else {
 				if (! player.loadVideoById) setTimeout(getNext, 100);
-                player.loadVideoById({videoId:v_id});
+                player.loadVideoById({videoId:post.data.link.embed.id});
             }
 
-            //document.body.classList.remove('blur');
 			document.getElementById('loader').style.visibility = 'hidden';
         }
     </script>
